@@ -1,0 +1,535 @@
+**quicksort**
+#include<iostream>
+#include<ctime>
+#include<stdlib.h>
+
+#define max 500
+using namespace std;
+void qsort(int [],int,int);
+int partition(int [],int,int);
+int main()
+{
+int a[max],i,n;
+clock_t s,e,z;
+s=clock();
+cout<<"Enter the value of n:";
+cin>>n;
+for(i=0;i<n;i++)
+a[i]=rand()%100;
+cout<<"\nThe array elements before\n";
+for(i=0;i<n;i++)
+cout<<a[i]<<"\t";
+qsort(a,0,n-1);
+cout<<"\nElements of the array after sorting are:\n";
+for(i=0;i<n;i++)
+cout<<a[i]<<"\t";
+e=clock();
+z=e-s;
+cout<<"\nTime taken:"<<z/CLOCKS_PER_SEC<<" seconds";
+}
+void qsort(int a[], int low,int high)
+{
+int j;
+if(low<high)
+{
+j=partition(a,low,high);
+qsort(a,low,j-1);
+qsort(a,j+1,high);
+}
+}
+int partition(int a[], int low,int high)
+{
+int pivot,i,j,temp;
+pivot=a[low];
+i=low+1;
+j=high;
+while(1)
+{
+while(pivot>a[i] && i<=high)
+i++;
+while(pivot<a[j])
+j--;
+if(i<j)
+{
+temp=a[i];
+a[i]=a[j];
+a[j]=temp;
+}
+else
+{
+temp=a[j];
+a[j]=a[low];
+a[low]=temp;
+return j;
+}
+}
+}
+
+**mergesort**
+#include<time.h>
+#include<stdlib.h>
+#include<iostream>
+#define max 100
+using namespace std;
+void mergesort(int[100],int,int);
+void merge(int[100],int,int,int);
+int a[max];
+int main()
+{
+int i,n;
+clock_t s,e,z;
+s=clock();
+cout<<"Enter the no.of elements\n";
+cin>>n;
+cout<<"Elements of the array before sorting\n";
+for(i=0;i<n;i++)
+{
+a[i]=rand( )%1000;
+cout<<a[i]<<"\t";
+}
+mergesort(a,0,n-1);
+cout<<"\n Elements of the array after sorting\n";
+for(i=0;i<n;i++)
+cout<<a[i]<<"\t";
+e=clock();
+z=e-s;
+cout<<"\nthe time taken="<<z/CLOCKS_PER_SEC<<"seconds";
+}
+void mergesort(int a[100],int low,int high)
+{
+int mid;
+if(high>low)
+{
+mid=(low+high)/2;
+mergesort(a,low,mid);
+mergesort(a,mid+1,high);
+merge(a,low,mid,high);
+}
+}
+void merge(int a[100],int low,int mid,int high)
+{
+int h=low,j=mid+1,i=low,b[max],k;
+while((h<=mid)&&(j<=high))
+{
+if(a[h]<= a[j])
+{
+b[i]=a[h];
+h=h+1;
+}
+else
+{
+b[i]=a[j];
+j=j+1;
+}
+i=i+1;
+}
+if(h>mid)
+{
+for(k=j;k<=high;k++)
+{
+b[i]=a[k];
+i++;
+}
+}
+else
+{
+for(k=h;k <= mid;k++)
+{
+b[i]=a[k];
+i++;
+}
+}
+for(k=low;k<=high;k++)
+a[k]=b[k];
+}
+**topologicalsort**
+#include<iostream>
+using namespace std;
+void findindegree(int [10][10],int[10],int);
+void topological(int,int [10][10]);
+int main()
+{
+int a[10][10],i,j,n;
+cout<<"Enter the number of nodes:";
+cin>>n;
+cout<<"\nEnter the adjacency matrix\n";
+for(i=1;i<=n;i++)
+for(j=1;j<=n;j++)
+cin>>a[i][j];
+cout<<"\nThe adjacency matirx is:\n";
+for(i=1;i<=n;i++)
+{
+for(j=1;j<=n;j++)
+{
+cout<<a[i][j]<<"\t";
+}
+cout<<"\n";
+}
+topological(n,a);
+}
+void findindegree(int a[10][10],int indegree[10],int n)
+{
+int i,j,sum;
+for(j=1;j<=n;j++)
+{
+sum=0;
+for(i=1;i<=n;i++)
+{
+sum=sum+a[i][j];
+}
+indegree[j]=sum;
+}
+}
+void topological(int n,int a[10][10])
+{
+int k,top,t[100],i,stack[20],u,v,indegree[20];
+k=1;
+top=-1;
+findindegree(a,indegree,n);
+for(i=1;i<=n;i++)
+{
+if(indegree[i]==0)
+{
+stack[++top]=i;
+}
+}
+while(top!=-1)
+{
+u=stack[top--];
+t[k++]=u;
+for(v=1;v<=n;v++)
+{
+if(a[u][v]==1)
+{
+indegree[v]--;
+if(indegree[v]==0)
+{
+stack[++top]=v;
+}
+}
+}
+}
+cout<<"\nTopological sequence is\n";
+for(i=1;i<=n;i++)
+cout<<t[i]<<"\t";
+}
+**0/1knapsack**
+#include<iostream>
+#define MAX 50
+int p[MAX],w[MAX],n;
+int knapsack(int,int);
+int max(int,int);
+using namespace std;
+int main()
+{
+int m,i,optsoln;
+cout<<"Enter no. of objects: ";
+cin>>n;
+cout<<"\nEnter the weights:\n";
+for(i=1;i<=n;i++)
+cin>>w[i];
+cout<<"\nEnter the profits:\n";
+for(i=1;i<=n;i++)
+cin>>p[i];
+cout<<"\nEnter the knapsack capacity:";
+cin>>m;
+optsoln=knapsack(1,m);
+cout<<"\nThe optimal soluntion is:"<<optsoln;
+}
+int knapsack(int i,int m)
+{
+if(i==n)
+return (w[n]>m) ? 0: p[n];
+if(w[i]>m)
+return knapsack(i+1,m);
+return max(knapsack(i+1,m),knapsack(i+1,m-w[i])+p[i]);
+}
+int max(int a, int b)
+{
+if(a>b)
+return a;
+else
+return b;
+}
+**krusklas**
+#include <iostream>
+int ne=1,mincost=0,parent[20];
+int find(int);
+int uni(int,int);
+using namespace std;
+int main()
+{
+int n,i,j,min,cost[20][20],a,b,u,v;
+cout<<"\nEnter the no. of vertices:";
+cin>>n;
+cout<<"\nEnter the cost adjacency matrix:\n";
+for(i=1;i<=n;i++)
+{
+for(j=1;j<=n;j++)
+{
+cin>>cost[i][j];
+if(cost[i][j]==0)
+cost[i][j]=999;
+}
+}
+cout<<"The edges of Minimum Cost Spanning Tree are\n";
+while(ne < n)
+{
+min=999;
+for(i=1;i<=n;i++)
+{
+for(j=1;j <= n;j++)
+{
+if(cost[i][j] < min)
+{
+min=cost[i][j];
+a=u=i;
+b=v=j;
+}
+}
+}
+u=find(u);
+v=find(v);
+if(uni(u,v))
+{
+cout<<ne++<<"edge ("<<a<<","<<b<<") ="<<min<<"\n";
+mincost +=min;
+}
+cost[a][b]=cost[b][a]=999;
+}
+cout<<"\n\t Minimum cost ="<<mincost<<"\n";
+}
+int find(int i)
+{
+while(parent[i])
+parent[i];
+return i;
+}
+int uni(int i,int j)
+{
+if(i!=j)
+{
+parent[j]=i;
+return 1;
+}
+return 0;
+}
+**bfs**
+#include<iostream>
+using namespace std;
+void BFS(int [20][20],int,int [20],int);
+int main()
+{
+int n,a[20][20],i,j,visited[20],source;
+cout<<"Enter the number of vertices:";
+cin>>n;
+cout<<"\nEnter the adjacency matrix:\n";
+for(i=1;i<=n;i++)
+for(j=1;j<=n;j++)
+cin>>a[i][j];
+for(i=1;i<=n;i++)
+visited[i]=0;
+cout<<"\nEnter the source node:";
+cin>>source;
+visited[source]=1;
+BFS(a,source,visited,n);
+for(i=1;i<=n;i++)
+{
+if(visited[i]!=0)
+cout<<"\n Node "<<i<<" is reachable";
+else
+cout<<"\n Node "<<i<<" is not reachable";
+}
+}
+void BFS(int a[20][20],int source,int visited[20],int n)
+{
+int queue[20],f,r,u,v;
+f=0;
+r=-1;
+queue[++r]=source;
+while(f<=r)
+{
+u=queue[f++];
+for(v=1;v<=n;v++)
+{
+if(a[u][v]==1 && visited[v]==0)
+{
+queue[++r]=v;
+visited[v]=1;
+}
+}
+}
+}
+**dfs**
+#include<iostream>
+using namespace std;
+void DFS(int [20][20],int,int [20],int);
+int main()
+{
+int n,a[20][20],i,j,visited[20],source;
+cout<<"Enter the number of vertices: ";
+cin>>n;
+cout<<"\nEnter the adjacency matrix:\n";
+for(i=1;i<=n;i++)
+for(j=1;j<=n;j++)
+cin>>a[i][j];
+for(i=1;i<=n;i++)
+visited[i]=0;
+cout<<"\nEnter the source node: ";
+cin>>source;
+DFS(a,source,visited,n);
+for(i=1;i<=n;i++)
+{
+if(visited[i]==0)
+{
+cout<<"\nGraph is not connected";
+exit(0);
+}
+}
+cout<<"\nGraph is connectd\n";
+}
+void DFS(int a[20][20],int u,int visited[20],int n)
+{
+int v;
+visited[u]=1;
+for(v=1;v<=n;v++)
+{
+if(a[u][v]==1 && visited[v]==0)
+DFS(a,v,visited,n);
+}
+}
+**travellingsalesperson**
+#include<iostream>
+using namespace std;
+int s,c[100][100],ver;
+float optimum=999,sum;
+void swap(int v[], int i, int j)
+{
+int t;
+t = v[i];
+v[i] = v[j];
+v[j] = t;
+}
+void brute_force(int v[], int n, int i)
+{
+int j,sum1,k;
+if (i == n)
+{
+if(v[0]==s)
+{
+for (j=0; j<n; j++)
+cout<<v[j]<<"\t";
+sum1=0;
+for( k=0;k<n-1;k++)
+{
+sum1=sum1+c[v[k]][v[k+1]];
+}
+sum1=sum1+c[v[n-1]][s];
+cout<<" sum= "<<sum1<<"\n";
+if (sum1<optimum)
+optimum=sum1;
+}
+}
+else
+for (j=i; j<n; j++)
+{
+swap (v, i, j);
+brute_force (v, n, i+1);
+swap (v, i, j);
+}
+}
+void nearest_neighbour(int ver)
+{
+int min,p,i,j,vis[20],from;
+for(i=1;i<=ver;i++)
+vis[i]=0;
+vis[s]=1;
+from=s;
+sum=0;
+for(j=1;j<ver;j++)
+{
+min=999;
+for(i=1;i<=ver;i++)
+if(vis[i] !=1 &&c[from][i]<min && c[from][i] !=0 )
+{
+min= c[from][i];
+p=i;
+}
+vis[p]=1;
+from=p;
+sum=sum+min;
+}
+sum=sum+c[from][s];
+}
+int main ()
+{
+int ver,v[100],i,j;
+cout<<"Enter n :";
+cin>>ver;
+for (i=0; i<ver; i++)
+v[i] = i+1;
+cout<<"Enter cost matrix\n";
+for(i=1;i<=ver;i++)
+for(j=1;j<=ver;j++)
+cin>>c[i][j];
+cout<<"\nEnter source :";
+cin>>s;
+brute_force (v, ver, 0);
+cout<<"\nOptimum solution with brute force technique
+is="<<optimum<<"\n";
+nearest_neighbour(ver);
+cout<<"\nSolution with nearest neighbour technique is="<<sum<<"\n";
+cout<<"\nThe approximation val is="<<((sum/optimum)-1)*100<<"%";
+}
+**prims**
+#include<iostream>
+using namespace std;
+int ne=1,min_cost=0;
+int main()
+{
+int n,i,j,min,cost[20][20],a,u,b,v,source,visited[20];
+cout<<"Enter the no. of nodes:";
+cin>>n;
+cout<<"Enter the cost matrix:\n";
+for(i=1;i<=n;i++)
+{
+for(j=1;j<=n;j++)
+{
+cin>>cost[i][j];
+}
+}
+for(i=1;i<=n;i++)
+visited[i]=0;
+cout<<"Enter the root node:";
+cin>>source;
+visited[source]=1;
+cout<<"\nMinimum cost spanning tree is\n";
+while(ne<n)
+{
+min=999;
+for(i=1;i<=n;i++)
+{
+for(j=1;j<=n;j++)
+{
+if(cost[i][j]<min)
+if(visited[i]==0)
+continue;
+else
+{
+min=cost[i][j];
+a=u=i;
+b=v=j;
+}
+}
+}
+if(visited[u]==0||visited[v]==0)
+{
+cout<<"\nEdge"<<ne++<<"\t("<<a<<"->"<<b<<")="<<min;
+min_cost=min_cost+min;
+visited[b]=1;
+}
+cost[a][b]=cost[b][a]=999;
+}
+cout<<"\nMinimum cost="<<min_cost<<"\n";
+}
+****
