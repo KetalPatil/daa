@@ -778,8 +778,35 @@ int main()
 	return 0;
 }
 
-// This is code is contributed by rathbhupendra
 
 
-**matrixmultiplicationmultithreading**
+
+**matrixmultiplicationmultithreading**python
+import threading
+import random
+
+N = 2
+
+A = [[random.randint(1,10) for _ in range(N)] for _ in range(N)]
+B = [[random.randint(1,10) for _ in range(N)] for _ in range(N)]
+C = [[0 for _ in range(N)] for _ in range(N)]
+
+def thread_function(i, j):
+    for k in range(N):
+        C[i][j] += A[i][k] * B[k][j]
+
+threads = []
+for i in range(N):
+    for j in range(N):
+        thread = threading.Thread(target=thread_function, args=(i,j))
+        thread.start()
+        threads.append(thread)
+
+for thread in threads:
+    thread.join()
+
+print("The resulting matrix is: ")
+for row in C:
+    print(row)
+
 
