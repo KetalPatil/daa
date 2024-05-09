@@ -810,3 +810,66 @@ for row in C:
     print(row)
 
 
+**convexhull**
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// Structure to represent a point in 2D space
+struct Point {
+    int x, y;
+};
+
+// Utility function to find orientation of triplet (p, q, r)
+// Returns:
+// 0 --> p, q, r are colinear
+// 1 --> Clockwise
+// 2 --> Counterclockwise
+int orientation(Point p, Point q, Point r) {
+    int val = (q.y - p.y) * (r.x - q.x) - (q.x - p.x) * (r.y - q.y);
+    if (val == 0) return 0; // colinear
+    return (val > 0) ? 1 : 2; // clockwise or counterclockwise
+}
+
+// Function to find convex hull of a set of n points using Gift Wrapping algorithm
+vector<Point> convexHull(vector<Point> points) {
+    int n = points.size();
+    if (n < 3) return {}; // Convex hull not possible with less than 3 points
+
+    // Find leftmost point
+    int left = 0;
+    for (int i = 1; i < n; i++) {
+        if (points[i].x < points[left].x)
+            left = i;
+    }
+
+    vector<Point> hull;
+    int p = left, q;
+    do {
+        hull.push_back(points[p]);
+
+        // Search for a point 'q' such that orientation(p, i, q) is counterclockwise for all points 'i'
+        q = (p + 1) % n;
+        for (int i = 0; i < n; i++) {
+            if (orientation(points[p], points[i], points[q]) == 2)
+                q = i;
+        }
+
+        p = q;
+    } while (p != left);
+
+    return hull;
+}
+
+int main() {
+    vector<Point> points = {{0, 3}, {2, 2}, {1, 1}, {2, 1},
+                            {3, 0}, {0, 0}, {3, 3}};
+    
+    vector<Point> convexHullPoints = convexHull(points);
+    cout << "Convex Hull Points:\n";
+    for (auto p : convexHullPoints) {
+        cout << "(" << p.x << ", " << p.y << ")\n";
+    }
+
+    return 0;
+}
